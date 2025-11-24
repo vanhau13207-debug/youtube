@@ -1,1 +1,7 @@
-
+ffmpeg-python
+yt-dlp
+google-api-python-client
+google-auth-oauthlib
+google-auth
+google-generativeai
+requests
