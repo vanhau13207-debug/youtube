@@ -8,9 +8,10 @@ from uploader import upload
 import datetime, os
 
 PAGES = [
-    "https://www.facebook.com/xxxxx/videos",
-    "https://www.facebook.com/yyyyy/videos",
-    "https://www.facebook.com/zzzzz/videos",
+    "https://www.facebook.com/share/17Tbi8XFWq/?mibextid=wwXIfr",
+    "https://www.facebook.com/share/1DiKxcSG4p/?mibextid=wwXIfr",
+    "https://www.facebook.com/share/16eJnTqm5c/?mibextid=wwXIfr",
+    "https://www.facebook.com/share/1HDHu2QxfE/?mibextid=wwXIfr"
 ]
 
 def run():
