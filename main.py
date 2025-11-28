@@ -1,45 +1,60 @@
-from fb_scraper import get_reels_from_page
+from fb_scraper import get_from_multiple_pages
+from util_db import load_db, save_db, filter_new_videos
+from downloader import download
 from video_editor import process_video
 from concat_builder import build_30m
-from uploader import upload
 from title_desc import gen_title_desc
-from utils import load_db, save_db, filter_new_videos, download
+from uploader import upload
+import datetime, os
 
-import datetime
-import os
-
-PAGE = "https://www.facebook.com/yourpage/videos"  # đổi link page của bạn vào
+PAGES = [
+    "https://www.facebook.com/xxxxx/videos",
+    "https://www.facebook.com/yyyyy/videos",
+    "https://www.facebook.com/zzzzz/videos",
+]
 
 def run():
-    urls = get_reels_from_page(PAGE, 50)
+    print("→ Bắt đầu quét 3 page Facebook...")
+
+    urls = get_from_multiple_pages(PAGES, limit_each=100)
+
+    print(f"→ Tổng video lấy được: {len(urls)}")
+
     new = filter_new_videos(urls)
 
     if not new:
         print("Không có video mới.")
         return
+    
+    print(f"→ Video mới: {len(new)}")
 
     processed = []
 
-    for idx, url in enumerate(new[:20]):
-        raw = f"raw_{idx}.mp4"
-        out = f"edit_{idx}.mp4"
+    for i, url in enumerate(new[:20]):
+        raw = f"raw_{i}.mp4"
+        out = f"edit_{i}.mp4"
 
+        print(f"→ Tải: {url}")
         download(url, raw)
+
+        print(f"→ Xử lý video {i}")
         process_video(raw, out)
 
         processed.append(out)
 
+    print("→ Bắt đầu ghép đủ 30 phút...")
     build_30m(processed, "final.mp4")
 
+    print("→ Tạo SEO Title + Mô tả...")
     title, desc = gen_title_desc()
 
     schedule = (datetime.datetime.utcnow() + datetime.timedelta(hours=3)).isoformat("T") + "Z"
-
+    
+    print("→ Upload YouTube...")
     upload("final.mp4", title, desc, schedule)
 
     db = load_db()
     db["used"] += new[:20]
     save_db(db)
 
-if __name__ == "__main__":
-    run()
+    print("→ DONE!")
