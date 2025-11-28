@@ -1,7 +1,7 @@
 import google.generativeai as gen
 import os
 
-gen.configure(api_key=os.getenv("GEMINI_API"))
+gen.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
 TITLE_PROMPT = """
 Generate an SEO-optimized YouTube title (max 65 chars) for a 9:16 dangerous stunt compilation.
