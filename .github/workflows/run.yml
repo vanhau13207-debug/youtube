@@ -1,30 +1,31 @@
-name: AutoReels
+name: auto-reels
 
 on:
   schedule:
-    - cron: "0 */3 * * *"       # chạy mỗi 3 giờ
+    - cron: "0 */3 * * *"
   workflow_dispatch:
 
 jobs:
-  run:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - uses: actions/setup-python@v4
         with:
-          python-version: '3.10'
+          python-version: "3.10"
 
-      - name: Install Dependencies
-        run: pip install -r requirements.txt
+      - name: Install packages
+        run: |
+          sudo apt update
+          sudo apt install ffmpeg -y
+          pip install -r requirements.txt
 
-      - name: Run Tool
+      - name: Run tool
         env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
           YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
           YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: python main.py
