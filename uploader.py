@@ -1,43 +1,33 @@
-import requests
+import os
+import datetime
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
+from google.oauth2.credentials import Credentials
+
 
 CLIENT_ID = os.getenv("YT_CLIENT_ID")
 CLIENT_SECRET = os.getenv("YT_CLIENT_SECRET")
 REFRESH_TOKEN = os.getenv("YT_REFRESH_TOKEN")
 
-def get_access_token():
-    url = "https://oauth2.googleapis.com/token"
-    data = {
-        "client_id": CLIENT_ID,
-        "client_secret": CLIENT_SECRET,
-        "refresh_token": REFRESH_TOKEN,
-        "grant_type": "refresh_token"
-    }
-    res = requests.post(url, data=data).json()
-    return res["access_token"]
-
-def upload(video_path, title, desc, schedule_time):
-    access = get_access_token()
-
-    youtube = build(
-        "youtube", "v3",
-        developerKey=None,
-        credentials=None,
-        requestBuilder=lambda *args, **kwargs: None
+def get_youtube_client():
+    creds = Credentials(
+        None,
+        refresh_token=REFRESH_TOKEN,
+        client_id=CLIENT_ID,
+        client_secret=CLIENT_SECRET,
+        token_uri="https://oauth2.googleapis.com/token"
     )
+    return build("youtube", "v3", credentials=creds)
 
-    youtube._http.headers.update({
-        "Authorization": f"Bearer {access}",
-        "Accept": "application/json"
-    })
+def upload(video_file, title, description, schedule_time):
+    youtube = get_youtube_client()
 
     request = youtube.videos().insert(
         part="snippet,status",
         body={
             "snippet": {
                 "title": title,
-                "description": desc,
+                "description": description,
                 "categoryId": "24"
             },
             "status": {
@@ -45,7 +35,8 @@ def upload(video_path, title, desc, schedule_time):
                 "publishAt": schedule_time
             }
         },
-        media_body=MediaFileUpload(video_path)
+        media_body=MediaFileUpload(video_file)
     )
 
-    return request.execute()
+    response = request.execute()
+    print("UPLOAD DONE → VIDEO ID:", response["id"])
