@@ -1,12 +1,13 @@
-from fb_scraper import get_from_multiple_pages
-from util_db import load_db, save_db, filter_new_videos
-from downloader import download
+from fb_scraper import get_reels_from_pages
 from video_editor import process_video
 from concat_builder import build_30m
-from title_desc import gen_title_desc
 from uploader import upload
+from title_desc import gen_title_desc
+from download import download
+from db import load_db, save_db
 import datetime, os
 
+# ★★★ THÊM NHIỀU PAGE Ở ĐÂY ★★★
 PAGES = [
     "https://www.facebook.com/share/17Tbi8XFWq/?mibextid=wwXIfr",
     "https://www.facebook.com/share/1DiKxcSG4p/?mibextid=wwXIfr",
@@ -14,48 +15,46 @@ PAGES = [
     "https://www.facebook.com/share/1HDHu2QxfE/?mibextid=wwXIfr"
 ]
 
+
 def run():
-    print("→ Bắt đầu quét 3 page Facebook...")
+    print("Đang quét nhiều page...")
+    all_urls = get_reels_from_pages(PAGES, limit_each=40)
 
-    urls = get_from_multiple_pages(PAGES, limit_each=100)
-
-    print(f"→ Tổng video lấy được: {len(urls)}")
-
-    new = filter_new_videos(urls)
+    db = load_db()
+    new = [u for u in all_urls if u not in db["used"]]
 
     if not new:
         print("Không có video mới.")
         return
-    
-    print(f"→ Video mới: {len(new)}")
+
+    print("Đã tìm thấy:", len(new), "video mới")
 
     processed = []
 
-    for i, url in enumerate(new[:20]):
+    for i, url in enumerate(new[:20]):  # lấy tối đa 20 video để ghép 30 phút
         raw = f"raw_{i}.mp4"
         out = f"edit_{i}.mp4"
 
-        print(f"→ Tải: {url}")
+        print("Tải video:", url)
         download(url, raw)
 
-        print(f"→ Xử lý video {i}")
+        print("Xử lý video...")
         process_video(raw, out)
-
         processed.append(out)
 
-    print("→ Bắt đầu ghép đủ 30 phút...")
+    print("Ghép video đủ 30 phút...")
     build_30m(processed, "final.mp4")
 
-    print("→ Tạo SEO Title + Mô tả...")
+    print("Tạo tiêu đề + mô tả...")
     title, desc = gen_title_desc()
 
-    schedule = (datetime.datetime.utcnow() + datetime.timedelta(hours=3)).isoformat("T") + "Z"
-    
-    print("→ Upload YouTube...")
+    print("Upload lên YouTube...")
+    schedule = (datetime.datetime.utcnow() + datetime.timedelta(hours=3))\
+        .isoformat("T") + "Z"
     upload("final.mp4", title, desc, schedule)
 
-    db = load_db()
+    # lưu video đã dùng
     db["used"] += new[:20]
     save_db(db)
 
-    print("→ DONE!")
+    print("XONG.")
