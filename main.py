@@ -9,12 +9,12 @@ import datetime, os
 
 # ★★★ THÊM NHIỀU PAGE Ở ĐÂY ★★★
 PAGES = [
-    "https://www.facebook.com/profile.php?id=100091512082274&name=xhp_nt__fblite__profile__tab_bar&profile_tab_item_selected=reels",
-    "https://www.facebook.com/profile.php?id=100092614194952&name=xhp_nt__fblite__profile__tab_bar&profile_tab_item_selected=reels",
-    "https://www.facebook.com/profile.php?id=100084160534408&name=xhp_nt__fblite__profile__tab_bar&profile_tab_item_selected=reels",
-    "https://www.facebook.com/profile.php?id=100090901622998&name=xhp_nt__fblite__profile__tab_bar&profile_tab_item_selected=reels",
-    "https://www.facebook.com/musideshenguo.121/reels/",
-    "https://www.facebook.com/profile.php?id=61559029680323&name=xhp_nt__fblite__profile__tab_bar&profile_tab_item_selected=reels"
+    "https://www.facebook.com/100091512082274/reels",
+    "https://www.facebook.com/100092614194952/reels",
+    "https://www.facebook.com/100084160534408/reels",
+    "https://www.facebook.com/100090901622998/reels",
+    "https://www.facebook.com/musideshenguo.121/reels",
+    "https://www.facebook.com/61559029680323/reels"
 ]
 
 
