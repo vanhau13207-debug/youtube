@@ -8,14 +8,18 @@ from db import load_db, save_db
 import datetime, os
 
 # ★★★ THÊM NHIỀU PAGE Ở ĐÂY ★★★
+
+
 PAGES = [
-    "https://www.facebook.com/100091512082274",
-    "https://www.facebook.com/100092614194952",
-    "https://www.facebook.com/100084160534408",
-    "https://www.facebook.com/100090901622998",
-    "https://www.facebook.com/musideshenguo.121",
-    "https://www.facebook.com/61559029680323",
+    "https://www.facebook.com/100091512082274/reels",
+    "https://www.facebook.com/100092614194952/reels",
+    "https://www.facebook.com/100084160534408/reels",
+    "https://www.facebook.com/100090901622998/reels",
+    "https://www.facebook.com/musideshenguo.121/reels",
+    "https://www.facebook.com/61559029680323/reels"
 ]
+
+urls = get_reels_from_pages(PAGES)
 
 
 def run():
