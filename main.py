@@ -10,17 +10,18 @@ import datetime, os
 # ★★★ THÊM NHIỀU PAGE Ở ĐÂY ★★★
 
 
-PAGES = [
-    "https://www.facebook.com/profile.php?id=100091512082274&sk=reels_tab",
-    "https://www.facebook.com/profile.php?id=100092614194952&sk=reels_tab",
-    "https://www.facebook.com/profile.php?id=100084160534408&sk=reels_tab",
-    "https://www.facebook.com/profile.php?id=100090901622998&sk=reels_tab",
-    "https://www.facebook.com/musideshenguo.121/reels",
-    "https://www.facebook.com/profile.php?id=61559029680323&sk=reels_tab"
+FB_PAGES = [
+    "https://m.facebook.com/100091512082274/videos",
+    "https://m.facebook.com/100092614194952/videos",
+    "https://m.facebook.com/100084160534408/videos",
+    "https://m.facebook.com/100090901622998/videos",
+    "https://m.facebook.com/musideshenguo.121/videos",
+    "https://m.facebook.com/61559029680323/videos"
 ]
 
 
-urls = get_reels_from_pages(PAGES)
+
+urls = get_reels_from_pages(FB_PAGES)
 
 
 def run():
