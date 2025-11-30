@@ -11,13 +11,14 @@ import datetime, os
 
 
 PAGES = [
-    "https://www.facebook.com/100091512082274/reels",
-    "https://www.facebook.com/100092614194952/reels",
-    "https://www.facebook.com/100084160534408/reels",
-    "https://www.facebook.com/100090901622998/reels",
+    "https://www.facebook.com/profile.php?id=100091512082274&sk=reels_tab",
+    "https://www.facebook.com/profile.php?id=100092614194952&sk=reels_tab",
+    "https://www.facebook.com/profile.php?id=100084160534408&sk=reels_tab",
+    "https://www.facebook.com/profile.php?id=100090901622998&sk=reels_tab",
     "https://www.facebook.com/musideshenguo.121/reels",
-    "https://www.facebook.com/61559029680323/reels"
+    "https://www.facebook.com/profile.php?id=61559029680323&sk=reels_tab"
 ]
+
 
 urls = get_reels_from_pages(PAGES)
 
