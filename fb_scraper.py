@@ -1,45 +1,33 @@
 import requests
 import re
 
-def get_reels_from_page(page_url, limit=50):
-    """
-    Lấy link reels từ 1 page
-    """
-    try:
-        html = requests.get(page_url, timeout=15).text
-    except:
+def load_cookie():
+    raw = open("cookie.txt", "r").read().strip()
+    cookies = {}
+    for c in raw.split(";"):
+        if "=" in c:
+            k, v = c.strip().split("=", 1)
+            cookies[k] = v
+    return cookies
+
+def get_reels_from_page(page_url):
+    cookies = load_cookie()
+
+    headers = {
+        "User-Agent": "Mozilla/5.0",
+        "Accept-Language": "en-US,en;q=0.9",
+    }
+
+    r = requests.get(page_url, headers=headers, cookies=cookies)
+    html = r.text
+
+    # DEBUG: giúp bạn xem có đang bị redirect login không
+    if "login" in html.lower() or "password" in html.lower():
+        print("❌ Cookie die hoặc thiếu quyền → FB trả về trang login.")
         return []
 
-    # Regex tìm link reel (HD + SD)
-    patterns = [
-        r'"browser_native_hd_url":"(.*?)"',
-        r'"browser_native_sd_url":"(.*?)"'
-    ]
+    # Tìm link HD video gốc
+    pattern = r'"browser_native_hd_url":"(.*?)"'
+    found = re.findall(pattern, html)
 
-    found = []
-    for p in patterns:
-        matches = re.findall(p, html)
-        for m in matches:
-            link = m.encode('utf-8').decode('unicode_escape')
-            found.append(link)
-
-    # Unique + limit
-    found = list(dict.fromkeys(found))
-    return found[:limit]
-
-
-def get_reels_from_pages(page_urls, limit_each=30):
-    """
-    Lấy reels từ nhiều page
-    """
-    all_links = []
-
-    for url in page_urls:
-        print(f"Đang quét page: {url}")
-        links = get_reels_from_page(url, limit_each)
-        print(f"  → Tìm được {len(links)} video")
-        all_links.extend(links)
-
-    # Unique tất cả
-    all_links = list(dict.fromkeys(all_links))
-    return all_links
+    return [x.replace("\\/", "/") for x in found]
